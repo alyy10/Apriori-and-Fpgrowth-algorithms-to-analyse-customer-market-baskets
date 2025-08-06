@@ -1,107 +1,215 @@
-# Apriori-and-Fpgrowth-algorithms-to-analyse-customer-market-baskets
+# Market Basket Analysis Project
 
-## Overview
+## 📊 Project Overview
 
-This repository hosts a comprehensive **Market Basket Analysis (MBA)** project. Market Basket Analysis is a powerful data mining technique used to uncover associations between items frequently purchased together in transactional datasets. By applying the **Apriori algorithm**, this project identifies strong relationships between products, enabling retailers to optimize strategies such as product placement, cross-selling, promotional bundling, and targeted marketing campaigns.
+This project implements **Market Basket Analysis**, a data mining technique used by large retailers to discover associations between items purchased together. By analyzing transaction patterns, retailers can identify relationships between products that frequently appear in the same shopping basket, enabling better inventory management, product placement, and cross-selling strategies.
 
-The project provides an end-to-end example of MBA, from data loading and preprocessing to generating and interpreting association rules. It serves as a valuable resource for data analysts, business intelligence professionals, and students interested in applying association rule mining to real-world retail scenarios.
+## 🎯 Objectives
 
-## Project Purpose
+Market Basket Analysis helps answer key business questions:
+- Which products are frequently bought together?
+- What items should be placed near each other in stores?
+- Which products can be cross-promoted to increase sales?
+- How can we optimize product bundling strategies?
 
-The primary objectives of this project are:
+## 📁 Dataset Description
 
-- **Illustrate MBA Concepts**: Clearly explain core metrics such as *support*, *confidence*, and *lift*, and demonstrate their application in identifying meaningful product associations.
-- **Demonstrate Data Preparation**: Showcase the steps required to clean, merge, and transform raw transactional data into a format suitable for MBA.
-- **Implement Apriori Algorithm**: Provide a working implementation of the Apriori algorithm to discover frequent itemsets and derive association rules.
-- **Deliver Actionable Insights**: Translate analytical findings into practical business strategies, such as optimizing store layouts, enhancing cross-selling opportunities, and improving inventory management.
+The project utilizes a comprehensive retail dataset with multiple interconnected tables:
 
-## Datasets
+### 📋 Data Structure
 
-The project utilizes eight datasets, stored in the `data/` directory, to perform the Market Basket Analysis. These datasets simulate a retail environment, providing information about customers, products, product categories, and transactions.
+| Dataset | File | Records | Description |
+|---------|------|---------|-------------|
+| **Sales** | `sales.csv` | Transaction records | Core transactional data with product, customer, store, and sales information |
+| **Products** | `product.csv` | Product catalog | Detailed product information including brands, prices, and specifications |
+| **Customers** | `customer.csv` | Customer profiles | Demographics, income, location, and customer characteristics |
+| **Stores** | `store.csv` | Store information | Store details, locations, types, and features |
+| **Product Classes** | `product_class.csv` | Product hierarchy | Product categorization and department structure |
+| **Regions** | `region.csv` | Geographic data | Sales regions and districts |
+| **Time** | `time_by_day.csv` | Date dimensions | Time-based data for temporal analysis |
 
-## Methodology
+### 🔍 Key Data Features
 
-The Market Basket Analysis follows a structured pipeline implemented in the `Market+Basket.ipynb` notebook:
+#### Sales Data (`sales.csv`)
+- **product_id**: Unique product identifier
+- **customer_id**: Unique customer identifier  
+- **store_id**: Store location identifier
+- **time_id**: Transaction timestamp reference
+- **store_sales**: Total sales amount
+- **store_cost**: Product cost
+- **unit_sales**: Number of units sold
 
-1. **Data Loading and Initial Exploration**
+#### Product Data (`product.csv`)
+- **product_id**: Product identifier
+- **product_class_id**: Product category reference
+- **brand_name**: Product brand
+- **product_name**: Full product name
+- **SKU**: Stock Keeping Unit
+- **SRP**: Suggested Retail Price
+- **gross_weight** & **net_weight**: Product weights
+- **recyclable_package**: Environmental indicator
+- **low_fat**: Health indicator
 
-   - Loads `customer.csv`, `product.csv`, `product_class.csv`, and `sales.csv` into pandas DataFrames.
-   - Uses `.head()` to inspect the structure and content of each dataset, ensuring correct loading and data integrity.
-2. **Data Merging and Integration**
+#### Customer Data (`customer.csv`)
+- **customer_id**: Unique customer identifier
+- **city**, **state_province**, **country**: Geographic location
+- **yearly_income**: Income bracket
+- **gender**: Customer gender
+- **total_children**: Number of children
+- **education**: Education level
+- **occupation**: Job category
+- **member_card**: Loyalty card type
 
-   - **Product Enrichment**: Merges `product.csv` with `product_class.csv` on `product_class_id` (left join) to add hierarchical classification (subcategory, category, department, family).
-   - **Customer Integration**: Merges `sales.csv` with `customer.csv` on `customer_id` (left join) to include customer demographics in transaction records.
-   - **Full Integration**: Merges the resulting sales DataFrame with the enriched product DataFrame on `product_id` to create a comprehensive dataset combining transaction, customer, and product details.
-3. **Data Preprocessing for MBA**
+#### Store Data (`store.csv`)
+- **store_id**: Store identifier
+- **store_type**: Store category (Supermarket, Small Grocery, etc.)
+- **store_city**, **store_state**: Store location
+- **store_sqft**: Store size
+- **coffee_bar**, **video_store**, **salad_bar**: Store features
 
-   - **Missing Value Check**: Uses `.isnull().sum()` to identify missing values in the sales DataFrame.
-   - **Unique Value Count**: Applies `.nunique()` to assess the cardinality of each column, aiding in data understanding.
-   - **Filtering**: Filters transactions to include only products in the 'Food' family to focus the analysis on a specific product domain.
-   - **Transaction-Item Mapping**: Groups transactions by `customer_id`, aggregating `product_name` into lists to create customer baskets (one row per customer with a list of purchased products).
-4. **Apriori Algorithm and Association Rule Mining**
+## 🛠️ Technology Stack
 
-   - **One-Hot Encoding**: Transforms the customer baskets into a binary DataFrame where rows are customers, columns are products, and values are 1 (purchased) or 0 (not purchased) using a custom `encode_units` function and pandas' `get_dummies`.
-   - **Frequent Itemset Generation**: Applies the `apriori` function from `mlxtend.frequent_patterns` with a minimum support threshold of 0.07, identifying itemsets that appear in at least 7% of transactions.
-   - **Association Rule Derivation**: Uses `association_rules` with `metric="lift"` and `min_threshold=1` to generate rules, ensuring only rules with positive associations (lift > 1) are included.
-   - **Sorting Rules**: Sorts rules by lift in descending order to highlight the strongest associations.
-5. **Analysis and Interpretation**
-
-   - Displays the association rules in a DataFrame with metrics: *antecedents*, *consequents*, *support*, *confidence*, and *lift*.
-   - Interprets rules to identify product pairs frequently purchased together, providing insights for business applications.
-
-## Prerequisites
-
-To run the notebook, ensure the following are installed:
-
-- **Python 3.11** or higher
-- **Jupyter Notebook** or **JupyterLab**
-- **Required Libraries**:
-  - `pandas`
-  - `numpy`
-  - `matplotlib`
-  - `mlxtend`
-  - `IPython`
-
-Install dependencies using pip:
-
-```bash
-pip install pandas numpy matplotlib mlxtend IPython
+### Libraries & Tools
+```python
+import pandas as pd          # Data manipulation and analysis
+import numpy as np           # Numerical computations
+import matplotlib.pyplot as plt  # Data visualization
+from IPython.core.interactiveshell import InteractiveShell  # Enhanced output display
 ```
 
-## Usage
+### Development Environment
+- **Language**: Python 3.11.0
+- **IDE**: Jupyter Notebook
+- **Data Format**: CSV files
+- **Visualization**: Matplotlib
 
-The `Market+Basket.ipynb` notebook guides users through the MBA process:
+## 📈 Analysis Workflow
 
-1. **Introduction**: Markdown cells explain MBA concepts and the project's objectives.
-2. **Library Imports**: Imports `pandas`, `numpy`, `matplotlib`, `mlxtend`, and configures IPython for multiple outputs and full DataFrame display.
-3. **Data Loading**: Loads and previews the datasets using `.head()`.
-4. **Data Merging**: Combines datasets to create a unified transaction dataset.
-5. **Data Preparation**: Filters for 'Food' family products, checks for missing values, and transforms data into customer baskets.
-6. **Apriori Analysis**: Generates frequent itemsets and association rules, sorted by lift.
-7. **Results**: Displays rules for interpretation, ready for business applications.
+### 1. Data Loading & Exploration
+```python
+# Load all datasets
+customer = pd.read_csv("data/customer.csv")
+product = pd.read_csv("data/product.csv") 
+product_class = pd.read_csv("data/product_class.csv")
+region = pd.read_csv("data/region.csv")
+sales = pd.read_csv("data/sales.csv")
+store = pd.read_csv("data/store.csv")
+time_by_day = pd.read_csv("data/time_by_day.csv")
+```
 
-To extend the analysis, consider:
+### 2. Data Understanding
+- **Customer Analysis**: Demographics, geographic distribution, purchasing behavior
+- **Product Analysis**: Product categories, brands, pricing structures
+- **Sales Analysis**: Transaction patterns, seasonal trends, store performance
+- **Geographic Analysis**: Regional sales patterns and preferences
 
-- **Parameter Tuning**: Adjust `min_support` or `min_threshold` to explore different rule sets.
-- **Visualization**: Add network graphs or heatmaps to visualize associations (e.g., using `seaborn` or `networkx`).
-- **Custom Analysis**: Incorporate temporal trends or customer segment analysis by leveraging additional columns like `sale_date` or `yearly_income`.
+### 3. Market Basket Analysis Implementation
+The analysis typically involves:
+- **Association Rule Mining**: Identify frequently occurring item combinations
+- **Support Calculation**: Measure how frequently itemsets appear
+- **Confidence Analysis**: Determine the likelihood of purchasing item B given item A
+- **Lift Calculation**: Measure the strength of association between items
 
-## Key Findings and Recommendations
+## 🔧 Setup & Installation
 
-### Key Findings
+### Prerequisites
+```bash
+pip install pandas numpy matplotlib jupyter
+```
 
-- **Frequent Itemsets**: The Apriori algorithm identifies product combinations appearing in at least 7% of transactions, forming the basis for association rules.
-- **Association Rules**: Rules with lift > 1 indicate strong positive associations (e.g., "Customers who buy Milk also buy Cereal").
-- **Metrics**:
-  - *Support*: Frequency of itemset occurrence.
-  - *Confidence*: Likelihood of purchasing the consequent given the antecedent.
-  - *Lift*: Strength of association compared to independent purchases.
+### Running the Analysis
+1. Clone the repository
+2. Ensure all CSV files are in the `data/` directory
+3. Open `Market+Basket.ipynb` in Jupyter Notebook
+4. Run all cells to execute the complete analysis
 
-### Business Recommendations
+### Data Directory Structure
+```
+project/
+├── data/
+│   ├── customer.csv
+│   ├── product.csv
+│   ├── product_class.csv
+│   ├── region.csv
+│   ├── sales.csv
+│   ├── store.csv
+│   └── time_by_day.csv
+└── MarketBasketAnalysis.ipynb
+```
 
-- **Product Placement**: Place associated products (e.g., Bread and Butter) closer in stores to encourage impulse buys.
-- **Cross-Selling**: Train staff to suggest related items based on strong rules (e.g., recommend Cheese with Wine purchases).
-- **Promotional Bundling**: Offer discounts on frequently co-purchased items (e.g., Pasta and Sauce bundles).
-- **Targeted Marketing**: Use rules for personalized recommendations in email campaigns or e-commerce platforms (e.g., suggest Baby Wipes to Diaper buyers).
-- **Inventory Optimization**: Ensure associated products are stocked together to avoid missed sales opportunities.
-- **E-commerce Enhancements**: Implement "Customers who bought this also bought..." features based on association rules.
+## 📊 Sample Data Insights
+
+### Customer Demographics
+- **Geographic Spread**: Customers from USA, Canada, and Mexico
+- **Income Distribution**: Ranges from $10K to $90K+ brackets
+- **Education Levels**: From Partial High School to Bachelor's Degree
+- **Occupations**: Professional, Manual, Skilled Manual categories
+
+### Product Portfolio
+- **Brand Diversity**: Multiple brands including Washington products
+- **Category Range**: From beverages to various food categories
+- **Price Points**: Wide range from $0.74 to $3.64+ per item
+- **Health Options**: Low-fat and recyclable package options available
+
+### Store Network
+- **Store Types**: Headquarters, Supermarkets, Small Grocery, Gourmet Supermarkets
+- **Geographic Coverage**: Locations across North America
+- **Store Features**: Coffee bars, salad bars, prepared food sections
+- **Size Variation**: From small grocery stores to large supermarkets
+
+## 🎯 Business Applications
+
+### Retail Strategy Optimization
+- **Product Placement**: Position frequently bought-together items nearby
+- **Inventory Management**: Optimize stock levels based on association patterns
+- **Promotional Planning**: Create effective bundle offers and discounts
+- **Category Management**: Reorganize product categories for better customer flow
+
+### Marketing Insights
+- **Cross-selling Opportunities**: Recommend complementary products
+- **Customer Segmentation**: Target specific customer groups with relevant offers
+- **Seasonal Planning**: Identify seasonal buying patterns
+- **Regional Preferences**: Adapt product mix to regional preferences
+
+## 📈 Expected Outcomes
+
+The Market Basket Analysis will reveal:
+- **Strong Associations**: Product pairs with high confidence and lift scores
+- **Popular Baskets**: Most common product combinations
+- **Customer Segments**: Different buying behaviors across demographics
+- **Store Performance**: Variation in basket patterns across store types
+- **Seasonal Trends**: Time-based purchasing patterns
+
+## 🔍 Key Performance Indicators
+
+### Association Metrics
+- **Support**: Frequency of itemset occurrence
+- **Confidence**: Conditional probability of purchasing items together  
+- **Lift**: Measure of association strength (>1 indicates positive correlation)
+
+### Business Metrics
+- **Average Basket Size**: Number of items per transaction
+- **Cross-sell Rate**: Percentage of customers buying multiple categories
+- **Revenue Impact**: Sales increase from recommended associations
+
+## 📝 Analysis Features
+
+### Data Quality Management
+- **Display Configuration**: Full dataframe display without truncation
+- **Warning Management**: Filtered deprecation and general warnings
+- **Multiple Output Support**: Enhanced cell output display
+
+### Comprehensive Data Coverage
+- **Multi-dimensional Analysis**: Customer, product, geographic, and temporal dimensions
+- **Hierarchical Product Structure**: From product level to family categories
+- **Complete Transaction Records**: Full sales transaction details
+
+## 🚀 Future Enhancements
+
+### Advanced Analytics
+- **Sequential Pattern Mining**: Identify buying sequences over time
+- **Customer Lifetime Value**: Predict long-term customer value
+- **Recommendation Systems**: Build personalized product recommendations
+- **Price Sensitivity Analysis**: Understand price impact on associations
+
+
